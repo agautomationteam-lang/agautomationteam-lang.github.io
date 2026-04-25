@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>AG Automation — AI Employees for Canadian Businesses</title>
+<meta name="description" content="Hire AI employees that work 24/7. Receptionist, lead scraper, SMS follow-up, email campaigns. Built for Calgary trade businesses. Book a free demo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-serif'],display:['Space Grotesk','Inter','sans-serif']},colors:{void:'#020204',voidlight:'#08080f',voidcard:'#0e0e16',neon:{cyan:'#00f0ff',purple:'#a855f7',pink:'#ff2d95',blue:'#3b82f6',gold:'#f59e0b'}}}}};
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#020204;color:#e2e8f0;font-family:'Inter',system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+::selection{background:rgba(0,240,255,0.25);color:#fff}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#020204}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#00f0ff,#a855f7);border-radius:3px}
+#cvs{position:fixed;inset:0;z-index:0;pointer-events:none}
+.grid-bg{position:fixed;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(0,240,255,0.025)1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,0.025)1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse at center,black 40%,transparent 80%)}
+.noise{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px}
+.glass{background:rgba(14,14,22,0.65);backdrop-filter:blur(24px) saturate(1.2);border:1px solid rgba(255,255,255,0.06)}
+.glass-strong{background:rgba(14,14,22,0.85);backdrop-filter:blur(32px) saturate(1.3);border:1px solid rgba(255,255,255,0.08)}
+.gradient-text{background:linear-gradient(135deg,#00f0ff 0%,#a855f7 50%,#ff2d95 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.gradient-text-cyan{background:linear-gradient(135deg,#00f0ff,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.btn-primary{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 36px;background:linear-gradient(135deg,#00f0ff,#a855f7);border-radius:100px;color:#020204;font-weight:700;font-size:15px;letter-spacing:-0.01em;cursor:pointer;border:none;overflow:hidden;transition:transform 0.3s cubic-bezier(0.22,1,0.36,1),box-shadow 0.3s}
+.btn-primary::before{content:'';position:absolute;inset:0;background:inherit;border-radius:inherit;filter:blur(20px);opacity:0;transition:opacity 0.3s;z-index:-1}
+.btn-primary:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 40px rgba(0,240,255,0.25),0 0 80px rgba(168,85,247,0.15)}
+.btn-primary:hover::before{opacity:0.6}
+.btn-secondary{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 36px;background:transparent;border:1px solid rgba(255,255,255,0.15);border-radius:100px;color:#fff;font-weight:600;font-size:15px;cursor:pointer;transition:all 0.3s cubic-bezier(0.22,1,0.36,1)}
+.btn-secondary:hover{border-color:rgba(0,240,255,0.4);background:rgba(0,240,255,0.05);transform:translateY(-2px)}
+.btn-book{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 36px;background:linear-gradient(135deg,#635bff,#8b5cf6);border-radius:100px;color:#fff;font-weight:700;font-size:15px;letter-spacing:-0.01em;cursor:pointer;border:none;overflow:hidden;transition:transform 0.3s cubic-bezier(0.22,1,0.36,1),box-shadow 0.3s}
+.btn-book:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 40px rgba(99,91,255,0.3),0 0 80px rgba(139,92,246,0.15)}
+.section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#00f0ff;margin-bottom:16px;display:block}
+.card-hover{transition:transform 0.5s cubic-bezier(0.22,1,0.36,1),box-shadow 0.5s}
+.card-hover:hover{transform:translateY(-8px);box-shadow:0 24px 64px rgba(0,0,0,0.4),0 0 40px rgba(0,240,255,0.08)}
+.glow-line{height:1px;background:linear-gradient(90deg,transparent,rgba(0,240,255,0.4),rgba(168,85,247,0.4),transparent);border:none}
+.nav-link{position:relative;color:rgba(255,255,255,0.6);font-size:14px;font-weight:500;transition:color 0.3s;text-decoration:none}
+.nav-link:hover{color:#fff}
+.nav-link::after{content:'';position:absolute;bottom:-6px;left:50%;width:0;height:2px;background:linear-gradient(90deg,#00f0ff,#a855f7);transition:all 0.3s cubic-bezier(0.22,1,0.36,1);transform:translateX(-50%);border-radius:2px}
+.nav-link:hover::after{width:100%}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;will-change:transform}
+.stat-number{font-family:'Space Grotesk',sans-serif;font-size:56px;font-weight:700;line-height:1;background:linear-gradient(135deg,#00f0ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+@media(max-width:768px){.stat-number{font-size:40px}}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s cubic-bezier(0.22,1,0.36,1),transform 0.8s cubic-bezier(0.22,1,0.36,1)}
+.reveal.active{opacity:1;transform:translateY(0)}
+.reveal-scale{opacity:0;transform:scale(0.92);transition:opacity 0.8s cubic-bezier(0.22,1,0.36,1),transform 0.8s cubic-bezier(0.22,1,0.36,1)}
+.reveal-scale.active{opacity:1;transform:scale(1)}
+.stagger-parent .stagger-child{opacity:0;transform:translateY(24px);transition:opacity 0.6s cubic-bezier(0.22,1,0.36,1),transform 0.6s cubic-bezier(0.22,1,0.36,1)}
+.stagger-parent.active .stagger-child:nth-child(1){transition-delay:0.08s;opacity:1;transform:translateY(0)}
+.stagger-parent.active .stagger-child:nth-child(2){transition-delay:0.16s;opacity:1;transform:translateY(0)}
+.stagger-parent.active .stagger-child:nth-child(3){transition-delay:0.24s;opacity:1;transform:translateY(0)}
+.stagger-parent.active .stagger-child:nth-child(4){transition-delay:0.32s;opacity:1;transform:translateY(0)}
+.pulse-ring{position:relative}
+.pulse-ring::before{content:'';position:absolute;inset:-4px;border-radius:inherit;border:2px solid rgba(0,240,255,0.3);animation:pulseOut 2s ease-out infinite}
+@keyframes pulseOut{0%{transform:scale(1);opacity:1}100%{transform:scale(1.12);opacity:0}}
+.ai-worker-card{background:rgba(14,14,22,0.65);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:32px;transition:all 0.4s}
+.ai-worker-card:hover{border-color:rgba(0,240,255,0.2);transform:translateY(-4px)}
+.price-card{position:relative;background:rgba(14,14,22,0.8);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.06);border-radius:24px;padding:40px 32px;transition:transform 0.5s,box-shadow 0.5s}
+.price-card:hover{transform:translateY(-8px);box-shadow:0 24px 64px rgba(0,0,0,0.4),0 0 40px rgba(0,240,255,0.08)}
+.price-card.featured{border:1px solid rgba(0,240,255,0.3);box-shadow:0 0 60px rgba(0,240,255,0.1)}
+@media(max-width:1024px){.hide-mobile{display:none!important}}
+@media(min-width:1025px){.hide-desktop{display:none!important}}
+</style>
+</head>
+<body>
+<canvas id="cvs"></canvas>
+<div class="grid-bg"></div>
+<div class="noise"></div>
+
+<div class="orb" style="width:600px;height:600px;background:radial-gradient(circle,rgba(0,240,255,0.18),transparent 70%);top:-10%;left:-10%"></div>
+<div class="orb" style="width:700px;height:700px;background:radial-gradient(circle,rgba(168,85,247,0.15),transparent 70%);top:40%;right:-15%;animation:orbFloat 12s ease-in-out infinite alternate"></div>
+<div class="orb" style="width:400px;height:400px;background:radial-gradient(circle,rgba(255,45,149,0.12),transparent 70%);bottom:10%;left:25%;animation:orbFloat 15s ease-in-out infinite alternate-reverse"></div>
+<style>@keyframes orbFloat{0%{transform:translate(0,0)scale(1)}50%{transform:translate(40px,-30px)scale(1.08)}100%{transform:translate(-20px,20px)scale(0.95)}}</style>
+
+<!-- NAV -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+<div class="max-w-7xl mx-auto px-6 py-4">
+<div id="navBox" class="flex items-center justify-between rounded-full px-6 py-3 transition-all duration-500">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center">
+<i class="fa-solid fa-robot text-void text-sm"></i>
+</div>
+<span class="font-display font-bold text-lg tracking-tight text-white">AG Automation</span>
+</div>
+<div class="hide-mobile flex items-center gap-8">
+<a href="#ai-workers" class="nav-link">AI Workers</a>
+<a href="#packages" class="nav-link">Packages</a>
+<a href="#how-it-works" class="nav-link">How It Works</a>
+<a href="#contact" class="nav-link">Contact</a>
+</div>
+<a href="#contact" class="hide-mobile btn-primary text-sm py-2.5 px-6">
+Book a Demo <i class="fa-solid fa-calendar text-xs"></i>
+</a>
+</div>
+</div>
+</nav>
+
+<!-- HERO -->
+<section class="relative z-10 min-h-screen flex items-center pt-24 pb-16">
+<div class="max-w-7xl mx-auto px-6 w-full">
+<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div class="reveal active">
+<div class="section-label">Calgary's First AI Workforce Agency</div>
+<h1 class="font-display text-5xl md:text-7xl font-bold text-white leading-[1.05] mb-6">
+Hire AI Employees<br>That <span class="gradient-text">Never Sleep</span>
+</h1>
+<p class="text-lg md:text-xl text-white/60 leading-relaxed mb-8 max-w-xl">
+Your 24/7 AI workforce: receptionist, lead scraper, SMS follow-up, email campaigns — all working while you sleep. Built for Calgary trade businesses.
+</p>
+<div class="flex flex-wrap gap-4 mb-10">
+<a href="#contact" class="btn-primary text-base">
+Book Free Demo <i class="fa-solid fa-calendar-check"></i>
+</a>
+<a href="#ai-workers" class="btn-secondary text-base">
+See AI Workers <i class="fa-solid fa-chevron-down"></i>
+</a>
+</div>
+<div class="flex items-center gap-6 text-sm text-white/40">
+<div class="flex items-center gap-2"><i class="fa-solid fa-check text-neon-cyan"></i> Calgary-Based</div>
+<div class="flex items-center gap-2"><i class="fa-solid fa-check text-neon-cyan"></i> 24-Hour Setup</div>
+<div class="flex items-center gap-2"><i class="fa-solid fa-check text-neon-cyan"></i> Custom Quote</div>
+</div>
+</div>
+<div class="reveal-scale active relative">
+<div class="glass-strong rounded-3xl p-6 md:p-8 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 rounded-full blur-2xl"></div>
+<div class="flex items-center gap-3 mb-6 pb-6 border-b border-white/5">
+<div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center">
+<i class="fa-solid fa-headset text-white"></i>
+</div>
+<div>
+<div class="font-semibold text-white">AI Receptionist</div>
+<div class="text-xs text-white/40">Online now</div>
+</div>
+<div class="ml-auto flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-green-400 pulse-ring"></div>
+<span class="text-xs text-green-400">LIVE</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-user text-white/60 text-xs"></i></div>
+<div class="bg-white/5 rounded-2xl rounded-tl-md px-4 py-3 max-w-[85%]">
+<div class="text-sm text-white/80">Hi, do you offer emergency HVAC service?</div>
+<div class="text-[10px] text-white/20 mt-1">2:14 AM — Customer</div>
+</div>
+</div>
+<div class="flex gap-3 flex-row-reverse">
+<div class="w-8 h-8 rounded-full bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div>
+<div class="bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 rounded-2xl rounded-tr-md px-4 py-3 max-w-[85%] border border-neon-cyan/10">
+<div class="text-sm text-white">Yes! We offer 24/7 emergency HVAC service. I'll connect you with our on-call technician right away. What's your address?</div>
+<div class="text-[10px] text-neon-cyan/60 mt-1">2:14 AM — AI Receptionist</div>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-user text-white/60 text-xs"></i></div>
+<div class="bg-white/5 rounded-2xl rounded-tl-md px-4 py-3 max-w-[85%]">
+<div class="text-sm text-white/80">1520 4th St NW, Calgary</div>
+</div>
+</div>
+<div class="flex gap-3 flex-row-reverse">
+<div class="w-8 h-8 rounded-full bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-robot text-white text-xs"></i></div>
+<div class="bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 rounded-2xl rounded-tr-md px-4 py-3 max-w-[85%] border border-neon-cyan/10">
+<div class="text-sm text-white">Perfect! I've dispatched our technician to 1520 4th St NW. They'll arrive in 35 minutes. You'll get a text when they're 5 min away.</div>
+<div class="text-[10px] text-neon-cyan/60 mt-1">2:15 AM — AI Receptionist</div>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-white/5 flex items-center gap-3">
+<div class="flex-1 text-xs text-white/30">AI handled this in 47 seconds while the owner was asleep</div>
+<div class="text-xs font-semibold text-neon-cyan"><i class="fa-solid fa-calendar-check mr-1"></i> Job Booked</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- AI WORKERS -->
+<section id="ai-workers" class="relative z-10 py-24">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center max-w-3xl mx-auto mb-16 reveal">
+<div class="section-label">The Workforce</div>
+<h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">Meet Your AI Employees</h2>
+<p class="text-white/50 text-lg">Each AI worker specializes in one job. Hire the ones you need. Skip the ones you don't.</p>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-parent reveal">
+<div class="ai-worker-card stagger-child">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-neon-cyan/20 to-neon-cyan/5 border border-neon-cyan/20 flex items-center justify-center mb-5">
+<i class="fa-solid fa-headset text-neon-cyan text-xl"></i>
+</div>
+<h3 class="font-display font-bold text-white text-lg mb-2">AI Receptionist</h3>
+<p class="text-sm text-white/40 mb-4">Answers calls 24/7, books appointments, handles emergencies. Speaks naturally.</p>
+<div class="flex items-center gap-2 text-xs text-neon-cyan"><i class="fa-solid fa-check"></i> Never misses a call</div>
+</div>
+<div class="ai-worker-card stagger-child">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-neon-purple/20 to-neon-purple/5 border border-neon-purple/20 flex items-center justify-center mb-5">
+<i class="fa-solid fa-magnifying-glass text-neon-purple text-xl"></i>
+</div>
+<h3 class="font-display font-bold text-white text-lg mb-2">Lead Scraper</h3>
+<p class="text-sm text-white/40 mb-4">Finds new customers in Calgary. Scrapes Google, directories, social media automatically.</p>
+<div class="flex items-center gap-2 text-xs text-neon-purple"><i class="fa-solid fa-check"></i> 50+ leads per day</div>
+</div>
+<div class="ai-worker-card stagger-child">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-neon-pink/20 to-neon-pink/5 border border-neon-pink/20 flex items-center justify-center mb-5">
+<i class="fa-solid fa-comment-sms text-neon-pink text-xl"></i>
+</div>
+<h3 class="font-display font-bold text-white text-lg mb-2">AI SMS Follow-Up</h3>
+<p class="text-sm text-white/40 mb-4">Automatically texts missed leads. Personalized messages. Works while you sleep.</p>
+<div class="flex items-center gap-2 text-xs text-neon-pink"><i class="fa-solid fa-check"></i> 3x more conversions</div>
+</div>
+<div class="ai-worker-card stagger-child">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-neon-blue/20 to-neon-blue/5 border border-neon-blue/20 flex items-center justify-center mb-5">
+<i class="fa-solid fa-envelope-open-text text-neon-blue text-xl"></i>
+</div>
+<h3 class="font-display font-bold text-white text-lg mb-2">AI Email Campaigns</h3>
+<p class="text-sm text-white/40 mb-4">Nurture sequences that convert. Automated follow-ups. Industry-specific templates.</p>
+<div class="flex items-center gap-2 text-xs text-neon-blue"><i class="fa-solid fa-check"></i> 45% open rate</div>
+</div>
+<div class="ai-worker-card stagger-child">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-neon-gold/20 to-neon-gold/5 border border-neon-gold/20 flex items-center justify-center mb-5">
+<i class="fa-solid fa-star text-neon-gold text-xl"></i>
+</div>
+<h3 class="font-display font-bold text-white text-lg mb-2">Review Manager</h3>
+<p class="text-sm text-white/40 mb-4">Auto-requests Google reviews. Responds to reviews. Builds your reputation.</p>
+<div class="flex items-center gap-2 text-xs text-neon-gold"><i class="fa-solid fa-check"></i> 5-star growth</div>
+</div>
+<div class="ai-worker-card stagger-child">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-400/20 to-green-400/5 border border-green-400/20 flex items-center justify-center mb-5">
+<i class="fa-solid fa-share-nodes text-green-400 text-xl"></i>
+</div>
+<h3 class="font-display font-bold text-white text-lg mb-2">Social Media AI</h3>
+<p class="text-sm text-white/40 mb-4">Posts daily on Facebook/Instagram. Responds to comments. Builds your brand.</p>
+<div class="flex items-center gap-2 text-xs text-green-400"><i class="fa-solid fa-check"></i> Daily content</div>
+</div>
+<div class="ai-worker-card stagger-child">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-400/20 to-orange-400/5 border border-orange-400/20 flex items-center justify-center mb-5">
+<i class="fa-solid fa-calendar-check text-orange-400 text-xl"></i>
+</div>
+<h3 class="font-display font-bold text-white text-lg mb-2">AI Scheduler</h3>
+<p class="text-sm text-white/40 mb-4">Books appointments, manages calendar, sends reminders. Zero double-bookings.</p>
+<div class="flex items-center gap-2 text-xs text-orange-400"><i class="fa-solid fa-check"></i> Syncs with Google Calendar</div>
+</div>
+<div class="ai-worker-card stagger-child">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-400/20 to-red-400/5 border border-red-400/20 flex items-center justify-center mb-5">
+<i class="fa-solid fa-chart-line text-red-400 text-xl"></i>
+</div>
+<h3 class="font-display font-bold text-white text-lg mb-2">Analytics Dashboard</h3>
+<p class="text-sm text-white/40 mb-4">Real-time stats. Calls answered, leads generated, revenue tracked. Tony Stark style.</p>
+<div class="flex items-center gap-2 text-xs text-red-400"><i class="fa-solid fa-check"></i> Live data 24/7</div>
+</div>
+</div>
+</div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- PACKAGES (No Pricing) -->
+<section id="packages" class="relative z-10 py-24">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center max-w-3xl mx-auto mb-16 reveal">
+<div class="section-label">Packages</div>
+<h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">Built for Your Business Size</h2>
+<p class="text-white/50 text-lg">Every business is different. We'll build a custom package that fits your needs and budget. Book a free demo to get your quote.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-8 items-start">
+<!-- SMALL -->
+<div class="price-card reveal">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+<i class="fa-solid fa-store text-white/60"></i>
+</div>
+<div>
+<div class="text-xs text-white/30 uppercase tracking-wider">Small Business</div>
+<h3 class="font-display font-bold text-white text-xl">AI Starter</h3>
+</div>
+</div>
+<p class="text-sm text-white/40 mb-6">Perfect for solo owners, cafes, and small trades. Get your first AI employee up and running fast.</p>
+<div class="space-y-3 mb-8">
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> AI Receptionist (1 phone number)</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> AI SMS Follow-Up (5 sequences)</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> Basic Analytics Dashboard</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> 24-Hour Setup</div>
+</div>
+<a href="#contact" class="btn-book w-full text-center block">
+Get Custom Quote <i class="fa-solid fa-arrow-right"></i>
+</a>
+<div class="text-center mt-3 text-xs text-white/20">Best for: Cafes, small trades, solo owners</div>
+</div>
+<!-- MEDIUM -->
+<div class="price-card featured reveal">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-neon-cyan to-neon-purple text-void text-xs font-bold px-4 py-1 rounded-full">Most Popular</div>
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-cyan/20 to-neon-purple/20 flex items-center justify-center">
+<i class="fa-solid fa-building text-neon-cyan"></i>
+</div>
+<div>
+<div class="text-xs text-white/30 uppercase tracking-wider">Medium Business</div>
+<h3 class="font-display font-bold text-white text-xl">AI Professional</h3>
+</div>
+</div>
+<p class="text-sm text-white/40 mb-6">For growing businesses with 3-5 crew members. More AI workers, more leads, more growth.</p>
+<div class="space-y-3 mb-8">
+<div class="flex items-start gap-3 text-sm text-white/80"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> <strong>Everything in Starter</strong></div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> AI Lead Scraper (50 leads/day)</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> AI Email Campaigns</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> AI Review Manager</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> 2 Phone Numbers</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> Priority Support</div>
+</div>
+<a href="#contact" class="btn-book w-full text-center block">
+Get Custom Quote <i class="fa-solid fa-arrow-right"></i>
+</a>
+<div class="text-center mt-3 text-xs text-white/20">Best for: Growing trades, 3-5 crew, busy season</div>
+</div>
+<!-- COMPLEX -->
+<div class="price-card reveal">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-purple/20 to-neon-pink/20 flex items-center justify-center">
+<i class="fa-solid fa-city text-neon-purple"></i>
+</div>
+<div>
+<div class="text-xs text-white/30 uppercase tracking-wider">Complex System</div>
+<h3 class="font-display font-bold text-white text-xl">AI Enterprise</h3>
+</div>
+</div>
+<p class="text-sm text-white/40 mb-6">For multi-crew operations that need everything. CRM integration, unlimited AI workers, white-label options.</p>
+<div class="space-y-3 mb-8">
+<div class="flex items-start gap-3 text-sm text-white/80"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> <strong>Everything in Professional</strong></div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> CRM Integration</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> AI Social Media Manager</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> AI Scheduler + Calendar</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> Unlimited Phone Numbers</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> White-Label Option</div>
+<div class="flex items-start gap-3 text-sm text-white/60"><i class="fa-solid fa-check text-neon-cyan mt-0.5"></i> Dedicated Account Manager</div>
+</div>
+<a href="#contact" class="btn-book w-full text-center block">
+Get Custom Quote <i class="fa-solid fa-arrow-right"></i>
+</a>
+<div class="text-center mt-3 text-xs text-white/20">Best for: Multi-crew, franchises, high volume</div>
+</div>
+</div>
+</div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="relative z-10 py-24">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center max-w-3xl mx-auto mb-16 reveal">
+<div class="section-label">How It Works</div>
+<h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">Get Your AI Team in 24 Hours</h2>
+<p class="text-white/50 text-lg">No coding. No complexity. Book a demo → We build → You grow.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-8 stagger-parent reveal">
+<div class="text-center stagger-child">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-neon-cyan/20 to-neon-cyan/5 border border-neon-cyan/20 flex items-center justify-center mx-auto mb-6">
+<span class="font-display text-2xl font-bold text-neon-cyan">1</span>
+</div>
+<h3 class="font-display font-bold text-white text-xl mb-3">Book a Demo</h3>
+<p class="text-white/40 text-sm leading-relaxed">Schedule a free 15-minute demo. We'll show you exactly what AI would look like for YOUR business. No pressure.</p>
+</div>
+<div class="text-center stagger-child">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-neon-purple/20 to-neon-purple/5 border border-neon-purple/20 flex items-center justify-center mx-auto mb-6">
+<span class="font-display text-2xl font-bold text-neon-purple">2</span>
+</div>
+<h3 class="font-display font-bold text-white text-xl mb-3">Get Your Quote</h3>
+<p class="text-white/40 text-sm leading-relaxed">We build a custom package for your exact needs. You know the price before you commit. No hidden fees.</p>
+</div>
+<div class="text-center stagger-child">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-neon-pink/20 to-neon-pink/5 border border-neon-pink/20 flex items-center justify-center mx-auto mb-6">
+<span class="font-display text-2xl font-bold text-neon-pink">3</span>
+</div>
+<h3 class="font-display font-bold text-white text-xl mb-3">We Build & You Grow</h3>
+<p class="text-white/40 text-sm leading-relaxed">We configure everything in 24 hours. Your AI team starts working immediately. You focus on the work you love.</p>
+</div>
+</div>
+</div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- CALGARY -->
+<section class="relative z-10 py-24">
+<div class="max-w-7xl mx-auto px-6">
+<div class="glass-strong rounded-3xl p-8 md:p-12 reveal">
+<div class="grid lg:grid-cols-2 gap-12 items-center">
+<div>
+<div class="section-label">Calgary's AI Agency</div>
+<h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Built for Calgary Trade Businesses</h2>
+<p class="text-white/50 mb-6">We know Calgary. We know the trades. We know that when a furnace dies at -30°C, every missed call is a lost customer.</p>
+<div class="space-y-3">
+<div class="flex items-center gap-3 text-sm text-white/60"><i class="fa-solid fa-location-dot text-neon-cyan"></i> Based in Calgary</div>
+<div class="flex items-center gap-3 text-sm text-white/60"><i class="fa-solid fa-phone text-neon-cyan"></i> Alberta phone numbers</div>
+<div class="flex items-center gap-3 text-sm text-white/60"><i class="fa-solid fa-bolt text-neon-cyan"></i> 24-hour setup guarantee</div>
+<div class="flex items-center gap-3 text-sm text-white/60"><i class="fa-solid fa-handshake text-neon-cyan"></i> Local support, real humans</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass rounded-2xl p-5 text-center">
+<div class="stat-number text-3xl mb-1">562</div>
+<div class="text-xs text-white/30">Calgary Businesses Mapped</div>
+</div>
+<div class="glass rounded-2xl p-5 text-center">
+<div class="stat-number text-3xl mb-1">24/7</div>
+<div class="text-xs text-white/30">AI Never Sleeps</div>
+</div>
+<div class="glass rounded-2xl p-5 text-center">
+<div class="stat-number text-3xl mb-1">0</div>
+<div class="text-xs text-white/30">Missed Calls Again</div>
+</div>
+<div class="glass rounded-2xl p-5 text-center">
+<div class="stat-number text-3xl mb-1">100%</div>
+<div class="text-xs text-white/30">Calgary-Focused</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- TESTIMONIALS -->
+<section class="relative z-10 py-24">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center max-w-3xl mx-auto mb-16 reveal">
+<div class="section-label">Proof</div>
+<h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-4">What AI Employees Do</h2>
+<p class="text-white/50 text-lg">Real scenarios. Real results. All automated.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-6 stagger-parent reveal">
+<div class="glass rounded-2xl p-6 stagger-child">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center"><i class="fa-solid fa-temperature-low text-white"></i></div>
+<div><div class="font-semibold text-white text-sm">HVAC Emergency</div><div class="text-xs text-white/30">2:14 AM</div></div>
+</div>
+<p class="text-sm text-white/50 mb-3">"Customer's furnace died at -30°C. AI receptionist answered, dispatched technician, sent confirmation text. Owner slept through it all."</p>
+<div class="text-xs text-neon-cyan font-semibold">$500 job saved</div>
+</div>
+<div class="glass rounded-2xl p-6 stagger-child">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-purple to-neon-pink flex items-center justify-center"><i class="fa-solid fa-droplet text-white"></i></div>
+<div><div class="font-semibold text-white text-sm">Plumbing Lead</div><div class="text-xs text-white/30">Monday morning</div></div>
+</div>
+<p class="text-sm text-white/50 mb-3">"Lead scraper found a burst pipe emergency on Facebook. AI sent SMS within 2 minutes. Plumber got the job while competitors were still asleep."</p>
+<div class="text-xs text-neon-cyan font-semibold">$1,200 job captured</div>
+</div>
+<div class="glass rounded-2xl p-6 stagger-child">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-pink to-neon-gold flex items-center justify-center"><i class="fa-solid fa-star text-white"></i></div>
+<div><div class="font-semibold text-white text-sm">Review Boost</div><div class="text-xs text-white/30">After every job</div></div>
+</div>
+<p class="text-sm text-white/50 mb-3">"AI automatically texts happy customers asking for Google reviews. Roofer went from 12 reviews to 89 in 3 months. Rankings jumped."</p>
+<div class="text-xs text-neon-cyan font-semibold">47 new 5-star reviews</div>
+</div>
+</div>
+</div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- CTA -->
+<section class="relative z-10 py-24">
+<div class="max-w-4xl mx-auto px-6 text-center reveal">
+<div class="glass-strong rounded-3xl p-8 md:p-12 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-neon-cyan/10 to-neon-purple/10 rounded-full blur-3xl"></div>
+<div class="relative">
+<h2 class="font-display text-3xl md:text-5xl font-bold text-white mb-4">Ready to Meet Your AI Team?</h2>
+<p class="text-white/50 text-lg mb-8 max-w-xl mx-auto">Book a free 15-minute demo. We'll show you exactly what AI would look like for your business. No pressure. No obligation.</p>
+<div class="flex flex-wrap justify-center gap-4 mb-8">
+<a href="mailto:agautomationteam@gmail.com?subject=Book a Free Demo - AG Automation&body=Hi, I'd like to book a free demo for my business. Please let me know your availability." class="btn-book text-lg px-10 py-4">
+Book Free Demo <i class="fa-solid fa-calendar-check"></i>
+</a>
+</div>
+<div class="flex flex-wrap justify-center gap-6 text-sm text-white/30">
+<div class="flex items-center gap-2"><i class="fa-solid fa-clock text-neon-cyan"></i> 15 Minutes</div>
+<div class="flex items-center gap-2"><i class="fa-solid fa-video text-neon-cyan"></i> Zoom or Phone</div>
+<div class="flex items-center gap-2"><i class="fa-solid fa-gift text-neon-cyan"></i> 100% Free</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="relative z-10 py-24">
+<div class="max-w-7xl mx-auto px-6">
+<div class="grid lg:grid-cols-2 gap-12 items-center">
+<div class="reveal">
+<div class="section-label">Talk to a Human</div>
+<h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-4">Questions? We're Here.</h2>
+<p class="text-white/50 mb-8">AI does the work. Humans answer the questions. Call, text, or email — we respond in minutes.</p>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center"><i class="fa-solid fa-phone text-neon-cyan"></i></div>
+<div><div class="text-sm text-white/30">Call or Text</div><div class="text-white font-semibold">(825) 786-3021</div></div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center"><i class="fa-solid fa-envelope text-neon-purple"></i></div>
+<div><div class="text-sm text-white/30">Email</div><div class="text-white font-semibold">agautomationteam@gmail.com</div></div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center"><i class="fa-solid fa-location-dot text-neon-pink"></i></div>
+<div><div class="text-sm text-white/30">Based In</div><div class="text-white font-semibold">Calgary, Alberta</div></div>
+</div>
+</div>
+</div>
+<div class="reveal">
+<div class="glass rounded-2xl p-6">
+<div class="text-center mb-4">
+<div class="text-sm text-white/30">Typical Response Time</div>
+<div class="font-display text-2xl font-bold text-neon-cyan">Under 5 Minutes</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-sm"><span class="text-white/40">Text message</span><span class="text-neon-cyan font-semibold">2-5 min</span></div>
+<div class="w-full bg-white/5 rounded-full h-1.5"><div class="bg-gradient-to-r from-neon-cyan to-neon-purple h-1.5 rounded-full" style="width:95%"></div></div>
+<div class="flex justify-between text-sm"><span class="text-white/40">Email</span><span class="text-neon-cyan font-semibold">15-30 min</span></div>
+<div class="w-full bg-white/5 rounded-full h-1.5"><div class="bg-gradient-to-r from-neon-cyan to-neon-purple h-1.5 rounded-full" style="width:70%"></div></div>
+<div class="flex justify-between text-sm"><span class="text-white/40">Phone call</span><span class="text-neon-cyan font-semibold">1-4 hours</span></div>
+<div class="w-full bg-white/5 rounded-full h-1.5"><div class="bg-gradient-to-r from-neon-cyan to-neon-purple h-1.5 rounded-full" style="width:45%"></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="relative z-10 py-12 border-t border-white/5">
+<div class="max-w-7xl mx-auto px-6">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center">
+<i class="fa-solid fa-robot text-void text-xs"></i>
+</div>
+<span class="font-display font-bold text-white">AG Automation</span>
+</div>
+<div class="flex items-center gap-6 text-sm text-white/30">
+<a href="#ai-workers" class="hover:text-white transition-colors">AI Workers</a>
+<a href="#packages" class="hover:text-white transition-colors">Packages</a>
+<a href="#how-it-works" class="hover:text-white transition-colors">How It Works</a>
+</div>
+<div class="text-sm text-white/20">© 2026 AG Automation. Calgary, Alberta.</div>
+</div>
+</div>
+</footer>
+
+<script>
+// Canvas background
+const c=document.getElementById('cvs');
+const ctx=c.getContext('2d');
+let w,h;
+function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
+resize();window.addEventListener('resize',resize);
+const nodes=[];
+for(let i=0;i<60;i++){
+  nodes.push({
+    x:Math.random()*w,y:Math.random()*h,
+    vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,
+    r:Math.random()*1.5+0.5
+  });
+}
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  for(let i=0;i<nodes.length;i++){
+    const n=nodes[i];
+    n.x+=n.vx;n.y+=n.vy;
+    if(n.x<0||n.x>w)n.vx*=-1;
+    if(n.y<0||n.y>h)n.vy*=-1;
+    ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(0,240,255,0.3)';ctx.fill();
+    for(let j=i+1;j<nodes.length;j++){
+      const dx=nodes[j].x-n.x,dy=nodes[j].y-n.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<120){
+        ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(nodes[j].x,nodes[j].y);
+        ctx.strokeStyle=`rgba(0,240,255,${0.1*(1-d/120)})`;ctx.lineWidth=0.5;ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+// Scroll reveal
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('active');});
+},{threshold:0.1});
+document.querySelectorAll('.reveal,.reveal-scale,.stagger-parent').forEach(el=>observer.observe(el));
+
+// Navbar scroll
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('navbar');
+  const box=document.getElementById('navBox');
+  if(scrollY>50){
+    nav.classList.add('py-2');nav.classList.remove('py-4');
+    box.classList.add('glass','mx-4');box.classList.remove('px-6','py-3');box.classList.add('px-5','py-2.5');
+  }else{
+    nav.classList.add('py-4');nav.classList.remove('py-2');
+    box.classList.remove('glass','mx-4');box.classList.remove('px-5','py-2.5');box.classList.add('px-6','py-3');
+  }
+});
+</script>
+</body>
+</html>
