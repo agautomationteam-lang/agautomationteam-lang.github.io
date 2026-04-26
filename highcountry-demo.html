@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Demo for High Country Heating & Cooling — AG Automation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.2em;
+        }
+        .demo-badge {
+            display: inline-block;
+            background: #ff006e;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        /* Before/After Section */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .card.before { border-left: 4px solid #ff4757; }
+        .card.after { border-left: 4px solid #2ed573; }
+        .card h3 { font-size: 1.5em; margin-bottom: 15px; }
+        .card.before h3 { color: #ff4757; }
+        .card.after h3 { color: #2ed573; }
+        .card ul { list-style: none; }
+        .card li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card li:last-child { border-bottom: none; }
+        .icon { font-size: 1.2em; }
+        .before .icon { color: #ff4757; }
+        .after .icon { color: #2ed573; }
+
+        /* Chat Widget Demo */
+        .chat-demo {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .chat-demo h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+        .chat-widget {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #1a1a2e;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .chat-header {
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-header .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+        .chat-header .info h4 { font-size: 1em; }
+        .chat-header .info p { font-size: 0.8em; opacity: 0.8; }
+        .chat-body {
+            padding: 20px;
+            min-height: 300px;
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        .message.bot {
+            background: rgba(0,212,255,0.1);
+            border: 1px solid rgba(0,212,255,0.2);
+            margin-right: auto;
+        }
+        .message.user {
+            background: rgba(123,44,191,0.2);
+            border: 1px solid rgba(123,44,191,0.3);
+            margin-left: auto;
+            text-align: right;
+        }
+        .typing {
+            display: flex;
+            gap: 5px;
+            padding: 15px;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00d4ff;
+            animation: typing 1.4s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-10px); opacity: 1; }
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+        .stat-card .label {
+            color: #a0a0a0;
+            font-size: 0.95em;
+        }
+
+        /* CTA Section */
+        .cta {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(123,44,191,0.1));
+            border-radius: 20px;
+            border: 1px solid rgba(0,212,255,0.2);
+        }
+        .cta h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .cta p {
+            color: #a0a0a0;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            color: #fff;
+            padding: 18px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0,212,255,0.3);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 60px;
+        }
+        .footer a { color: #00d4ff; text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .comparison { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.8em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>See What AI Would Look Like for High Country Heating & Cooling</h1>
+            <p>Built specifically for High Country Heating & Cooling in Calgary</p>
+            <div class="demo-badge">PERSONALIZED DEMO</div>
+        </div>
+
+        <!-- Before/After -->
+        <div class="comparison">
+            <div class="card before">
+                <h3>❌ BEFORE</h3>
+                <ul>
+                    <li><span class="icon">📞</span> Phone goes to voicemail after hours</li>
+                    <li><span class="icon">🌙</span> 67% of calls come when you're off duty</li>
+                    <li><span class="icon">😴</span> Missed emergency furnace calls = lost revenue</li>
+                    <li><span class="icon">📉</span> Competitors with AI answer first</li>
+                    <li><span class="icon">⏰</span> You wake up to 5 missed "no heat" calls</li>
+                </ul>
+            </div>
+            <div class="card after">
+                <h3>✅ WITH AI RECEPTIONIST</h3>
+                <ul>
+                    <li><span class="icon">🤖</span> AI answers every call 24/7/365</li>
+                    <li><span class="icon">📅</span> Instantly books furnace/AC appointments</li>
+                    <li><span class="icon">📱</span> You get notified immediately via text</li>
+                    <li><span class="icon">💰</span> Capture $5,000 furnace jobs you'd miss</li>
+                    <li><span class="icon">😊</span> Customers love instant response at 2 AM</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Chat Widget Demo -->
+        <div class="chat-demo">
+            <h2>🤖 Watch the AI in Action</h2>
+            <div class="chat-widget">
+                <div class="chat-header">
+                    <div class="avatar">🤖</div>
+                    <div class="info">
+                        <h4>High Country Heating & Cooling AI Assistant</h4>
+                        <p>Online • Replies instantly</p>
+                    </div>
+                </div>
+                <div class="chat-body">
+                    <div class="message bot">
+                        Hi! I'm the AI receptionist for High Country Heating & Cooling. How can I help you today? 👋
+                    </div>
+                    <div class="message user">
+                        My furnace stopped working and it's freezing in Calgary!
+                    </div>
+                    <div class="message bot">
+                        Oh no! That's urgent — especially with Calgary weather. I can help you book an emergency appointment right now. What's your address?
+                    </div>
+                    <div class="message user">
+                        I'm in Applewood, near T2A 3W6
+                    </div>
+                    <div class="message bot">
+                        Perfect! We service Applewood. I have an opening today at 2:30 PM or 5:00 PM. Which works better? 🔥
+                    </div>
+                    <div class="typing">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number">67%</div>
+                <div class="label">of HVAC calls come after hours<br>in Calgary</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">24/7</div>
+                <div class="label">AI never sleeps<br>never calls in sick</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">3.4x</div>
+                <div class="label">more leads captured<br>with AI vs voicemail</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">15 sec</div>
+                <div class="label">average response time<br>vs hours of voicemail</div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta">
+            <h2>Get This for High Country Heating & Cooling</h2>
+            <p>Join Calgary HVAC companies already using AI to never miss a lead again.</p>
+            <a href="https://calendly.com/agautomationteam/30min" class="cta-button">Book a 10-Min Demo →</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Built with ❤️ by <a href="https://agautomation.ca">AG Automation</a> | Calgary, AB</p>
+            <p>This demo was created specifically for High Country Heating & Cooling. Not a template.</p>
+        </div>
+    </div>
+</body>
+</html>
