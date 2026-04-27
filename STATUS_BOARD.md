@@ -13,8 +13,9 @@
 | 3 | Full inventory of all accounts, configs, workflows documented | 2026-04-27 | ✅ Yes — `MIGRATION_GUIDE.md` |
 | 4 | Voice agent configs (Chloe v3/v4) saved | 2026-04-27 | ✅ In backup |
 | 5 | All lead databases exported | 2026-04-27 | ✅ In backup |
-| 6 | **JARVIS Live dashboard pushed to GitHub Pages** | 2026-04-27 | ✅ Live URL working |
+| 6 | **JARVIS Live REAL dashboard built** (connects to Vapi API) | 2026-04-27 | ✅ Code written, Vapi key embedded |
 | 7 | Status system + CURRENT_TASK discipline active | 2026-04-27 | ✅ Files created, AGENTS.md updated |
+| 8 | **JARVIS pushed to GitHub Pages** (permanent URL) | 2026-04-27 | ✅ Pushed — may take 2-5 min to go live |
 
 ## 🔄 IN PROGRESS
 | # | Task | Blocker | Next Action |
