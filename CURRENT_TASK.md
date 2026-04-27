@@ -10,10 +10,16 @@
 **Expected Done:** 2026-04-27 (today)
 
 ### Sub-tasks:
-1. ✅ Build JARVIS Live dashboard (`jarvis-live.html`)
-2. ⬜ Push to GitHub Pages
-3. ⬜ Verify URL works
-4. ⬜ Give MJ the link
+1. ✅ Acknowledged static HTML was fake — MJ called it out correctly
+2. ✅ Built REAL connected Next.js dashboard in `jarvis-app/`
+3. ✅ API routes created: `/api/agents`, `/api/calls`, `/api/health`, `/api/command`
+4. ✅ Successfully compiled — `npm run build` passed
+5. ✅ Dev server verified — runs on localhost:3000
+6. ✅ Code pushed to GitHub
+7. ⬜ Need Vapi private key to show real data
+8. ⬜ Need deployment (Vercel or MJ's machine) for MJ to access
+
+**Status: Real dashboard BUILT. Blocked on Vapi key + deployment.**
 
 ### Verification:
 - [ ] Files exist and are readable
