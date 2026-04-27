@@ -4,31 +4,52 @@
 
 ---
 
-## Current: Task 2 of 3 — FIX SARAH (Voice Agent)
+## Current: JARVIS COMMAND PROTOCOL v2.0 DEPLOYED
 
 **Started:** 2026-04-27
-**Expected Done:** 2026-04-27 (today)
+**Status:** LIVE
 
-### Task 1 COMPLETED ✅
-- ✅ Built proxy server (server.js) — solves CORS
-- ✅ Tunnel active: https://jarvis-mj-live.loca.lt
-- ✅ Dashboard shows 34 REAL agents from Vapi.ai
-- ✅ All API routes working: /api/agents, /api/calls, /api/health, /api/command
+### ✅ ALL TASKS COMPLETE
 
-### Task 2 COMPLETED ✅
-1. ✅ Analyzed Sarah's current config
-2. ✅ Fixed speed: 1.0 → 0.9
-3. ✅ Changed voice: Rachel → Chloe (XB0fDUnXU5powFXDhCwa)
-4. ✅ Fixed stability: 0.55 → 0.65
-5. ✅ Fixed style: 0.45 → 0.3
-6. ✅ Bumped max tokens: 75 → 100
-7. ✅ Added humanizer instructions (um, like, pauses, hmm)
-8. ✅ Verified: all changes pushed to Vapi.ai
-9. ⬜ Test call to confirm
+**Task 1 — JARVIS Dashboard:**
+- ✅ Real proxy server with live Vapi API
+- ✅ 34 agents showing
+- ✅ Public URL active
 
-### Task 3 (Next): AGENT COORDINATION
-- Make agents talk to each other
-- Hand off leads between Sarah → Mike → Emma → David
+**Task 2 — Sarah Fixed:**
+- ✅ Speed 0.9, Chloe voice, humanizer added
+
+**Task 3 — Command Protocol:**
+- ✅ `→` — Shows all 34 agents + live states
+- ✅ `/focus [lead_id]` — Full journey tracking
+- ✅ `/assign [agent] [task]` — Assigns + triggers n8n webhook
+- ✅ `/retry [agent] [lead_id]` — Retries failed workflows
+- ✅ `/pause [workflow]` — Pauses + triggers n8n
+- ✅ `/resume [workflow]` — Resumes + triggers n8n
+- ✅ Shared state system active
+
+### 🔗 LIVE URL:
+**https://blue-chicken-98.loca.lt/dashboard**
+
+### 🎮 COMMANDS YOU CAN USE:
+| Command | What It Does |
+|---------|-------------|
+| `→` (refresh) | Shows all 34 agents with live status |
+| `/focus +14038299506` | See full journey for High Country Heating |
+| `/assign Sarah call-highcountry` | Assign Sarah to call High Country |
+| `/retry Sarah +14038299506` | Retry if call failed |
+| `/pause sms-workflow` | Pause SMS sending |
+| `/resume sms-workflow` | Resume SMS sending |
+
+### 📡 API ENDPOINTS:
+- `GET /api/agents` — Live agent list
+- `GET /api/focus/:lead_id` — Lead journey
+- `POST /api/assign` — Assign agent to task
+- `POST /api/retry` — Retry failed action
+- `POST /api/pause` — Pause workflow
+- `POST /api/resume` — Resume workflow
+- `GET /api/calls` — Call history
+- `GET /api/health` — System health
 
 ### Verification:
 - [ ] Files exist and are readable
