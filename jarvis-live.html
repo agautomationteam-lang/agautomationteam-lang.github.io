@@ -3,459 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 JARVIS — Live Agent Command Center</title>
+    <title>JARVIS — Live Agent Command Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f4b 50%, #0f172a 100%);
-            min-height: 100vh;
-            color: #e2e8f0;
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-        }
-        .glass-border {
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .neon-text {
-            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
-        }
-        .neon-border {
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2), inset 0 0 15px rgba(59, 130, 246, 0.1);
-        }
-        .pulse-dot {
-            animation: pulse-dot 2s ease-in-out infinite;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-        }
-        .slide-in {
-            animation: slideIn 0.5s ease-out;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .agent-card:hover {
-            transform: translateY(-4px);
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.2);
-        }
-        .status-online { background: #10b981; }
-        .status-offline { background: #ef4444; }
-        .status-busy { background: #f59e0b; }
-        .log-entry {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-        }
-        .gradient-text {
-            background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
-            border-radius: 999px;
-            transition: width 0.5s ease;
-        }
-        .chat-bubble {
-            position: relative;
-            padding: 12px 16px;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            max-width: 80%;
-        }
-        .chat-bubble.sent {
-            background: rgba(59, 130, 246, 0.2);
-            margin-left: auto;
-            border-bottom-right-radius: 4px;
-        }
-        .chat-bubble.received {
-            background: rgba(139, 92, 246, 0.2);
-            margin-right: auto;
-            border-bottom-left-radius: 4px;
-        }
-        .metric-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
-        }
-        .live-indicator::before {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #10b981;
-            border-radius: 50%;
-            margin-right: 8px;
-            animation: pulse-dot 2s ease-in-out infinite;
-        }
+        body { font-family: 'Inter', sans-serif; background: #0a0e27; color: #e2e8f0; min-height: 100vh; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; }
+        .neon-text { text-shadow: 0 0 10px rgba(59,130,246,0.5); }
+        .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+        @keyframes pulse-dot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(0.8); } }
+        .agent-card:hover { transform: translateY(-4px); transition: all 0.3s; box-shadow: 0 10px 40px rgba(59,130,246,0.2); }
+        .log-entry { font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; }
+        .gradient-text { background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .live-indicator::before { content:''; display:inline-block; width:8px; height:8px; background:#10b981; border-radius:50%; margin-right:8px; animation: pulse-dot 2s infinite; }
+        .loading-shimmer { background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     </style>
 </head>
 <body class="p-4 md:p-8">
-    <!-- HEADER -->
-    <div class="max-w-7xl mx-auto mb-8">
-        <div class="flex items-center justify-between mb-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- HEADER -->
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-4xl md:text-5xl font-bold gradient-text mb-2">JARVIS</h1>
-                <p class="text-slate-400 text-lg">Live Agent Command Center</p>
+                <p class="text-slate-400 text-lg">Live Agent Command Center — Connected to Vapi.ai</p>
             </div>
-            <div class="text-right">
+            <div class="flex items-center gap-4">
                 <div class="glass px-6 py-3 rounded-2xl">
-                    <div class="live-indicator text-emerald-400 font-semibold mb-1">LIVE SYSTEM ACTIVE</div>
+                    <div class="live-indicator text-emerald-400 font-semibold mb-1" id="connection-status">CONNECTING...</div>
                     <div class="text-slate-400 text-sm" id="timestamp">--:--:-- MST</div>
                 </div>
+                <button onclick="refreshAll()" class="px-4 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm font-medium transition">🔄 Refresh</button>
             </div>
         </div>
-    </div>
 
-    <!-- TOP METRICS ROW -->
-    <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div class="glass p-5 rounded-2xl metric-card">
-            <div class="text-slate-400 text-sm mb-1">Active Agents</div>
-            <div class="text-3xl font-bold text-blue-400">4</div>
-            <div class="text-xs text-emerald-400 mt-1">● 3 online</div>
+        <!-- TOP METRICS -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="metrics-row">
+            <div class="glass p-5 rounded-2xl">
+                <div class="text-slate-400 text-sm mb-1">Total Agents</div>
+                <div class="text-3xl font-bold text-blue-400" id="metric-agents">—</div>
+                <div class="text-xs text-slate-500 mt-1">Loading from Vapi...</div>
+            </div>
+            <div class="glass p-5 rounded-2xl">
+                <div class="text-slate-400 text-sm mb-1">Calls Today</div>
+                <div class="text-3xl font-bold text-purple-400" id="metric-calls">—</div>
+                <div class="text-xs text-slate-500 mt-1">Loading...</div>
+            </div>
+            <div class="glass p-5 rounded-2xl">
+                <div class="text-slate-400 text-sm mb-1">Active Now</div>
+                <div class="text-3xl font-bold text-pink-400" id="metric-active">—</div>
+                <div class="text-xs text-slate-500 mt-1">Real-time</div>
+            </div>
+            <div class="glass p-5 rounded-2xl">
+                <div class="text-slate-400 text-sm mb-1">System Status</div>
+                <div class="text-3xl font-bold text-emerald-400" id="metric-system">—</div>
+                <div class="text-xs text-slate-500 mt-1">All services</div>
+            </div>
         </div>
-        <div class="glass p-5 rounded-2xl metric-card">
-            <div class="text-slate-400 text-sm mb-1">Leads Today</div>
-            <div class="text-3xl font-bold text-purple-400">0</div>
-            <div class="text-xs text-slate-500 mt-1">Waiting for outreach</div>
-        </div>
-        <div class="glass p-5 rounded-2xl metric-card">
-            <div class="text-slate-400 text-sm mb-1">Calls Made</div>
-            <div class="text-3xl font-bold text-pink-400">0</div>
-            <div class="text-xs text-slate-500 mt-1">Voice agent offline</div>
-        </div>
-        <div class="glass p-5 rounded-2xl metric-card">
-            <div class="text-slate-400 text-sm mb-1">Deals Closed</div>
-            <div class="text-3xl font-bold text-emerald-400">$0</div>
-            <div class="text-xs text-slate-500 mt-1">Pipeline: 0 leads</div>
-        </div>
-    </div>
 
-    <!-- MAIN GRID -->
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- LEFT: AGENT STATUS -->
-        <div class="lg:col-span-2">
-            <div class="glass p-6 rounded-2xl mb-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                        <span class="text-2xl">🤖</span> Active Agents
+        <!-- MAIN GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- LEFT: ALL AGENTS -->
+            <div class="lg:col-span-2">
+                <div class="glass p-6 rounded-2xl mb-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <span class="text-2xl">🤖</span> Your Agents <span class="text-sm text-slate-400 font-normal">(Live from Vapi)</span>
+                        </h2>
+                        <div class="flex gap-2">
+                            <select id="version-filter" onchange="filterAgents()" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                                <option value="all">All Versions</option>
+                                <option value="v4">v4.0 Only</option>
+                                <option value="v3">v3.0 Only</option>
+                                <option value="other">Original</option>
+                            </select>
+                            <select id="trade-filter" onchange="filterAgents()" class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                                <option value="all">All Trades</option>
+                                <option value="HVAC">HVAC</option>
+                                <option value="Plumbing">Plumbing</option>
+                                <option value="Electrical">Electrical</option>
+                                <option value="General">General</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="agent-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="col-span-2 p-8 text-center text-slate-400">
+                            <div class="loading-shimmer w-16 h-16 rounded-full mx-auto mb-4"></div>
+                            <p>Loading agents from Vapi.ai...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECENT CALLS -->
+                <div class="glass p-6 rounded-2xl">
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="text-2xl">📞</span> Recent Calls <span class="text-sm text-slate-400 font-normal">(Live)</span>
                     </h2>
-                    <div class="flex gap-2">
-                        <button onclick="refreshAgents()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm font-medium transition">
-                            🔄 Refresh
-                        </button>
-                        <button onclick="trainAgent()" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded-xl text-sm font-medium transition">
-                            🎓 Train
-                        </button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="agent-grid">
-                    <!-- SARAH -->
-                    <div class="agent-card glass p-5 rounded-xl cursor-pointer" onclick="showAgentDetail('sarah')">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-xl">
-                                    👩
-                                </div>
-                                <div>
-                                    <div class="font-bold text-white">Sarah</div>
-                                    <div class="text-xs text-slate-400">HVAC Cold Caller</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="status-offline w-3 h-3 rounded-full pulse-dot"></span>
-                                <span class="text-xs text-red-400">OFFLINE</span>
-                            </div>
-                        </div>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Voice Quality</span>
-                                <span class="text-yellow-400">⚠️ Needs Fix</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Calls Today</span>
-                                <span class="text-white">0</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Success Rate</span>
-                                <span class="text-white">—</span>
-                            </div>
-                        </div>
-                        <div class="mt-3 p-2 bg-red-500/10 rounded-lg border border-red-500/20">
-                            <div class="text-xs text-red-400">⚠️ Speed too fast • No voicemail • Needs humanizer</div>
-                        </div>
-                    </div>
-
-                    <!-- MIKE -->
-                    <div class="agent-card glass p-5 rounded-xl cursor-pointer" onclick="showAgentDetail('mike')">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-xl">
-                                    👨
-                                </div>
-                                <div>
-                                    <div class="font-bold text-white">Mike</div>
-                                    <div class="text-xs text-slate-400">Plumbing Specialist</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="status-offline w-3 h-3 rounded-full"></span>
-                                <span class="text-xs text-red-400">OFFLINE</span>
-                            </div>
-                        </div>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Status</span>
-                                <span class="text-slate-400">Not deployed</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Calls Today</span>
-                                <span class="text-white">0</span>
-                            </div>
-                        </div>
-                        <div class="mt-3 p-2 bg-slate-500/10 rounded-lg">
-                            <div class="text-xs text-slate-400">Waiting for Sarah fix before deploying</div>
-                        </div>
-                    </div>
-
-                    <!-- EMMA -->
-                    <div class="agent-card glass p-5 rounded-xl cursor-pointer" onclick="showAgentDetail('emma')">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-xl">
-                                    👩‍🔧
-                                </div>
-                                <div>
-                                    <div class="font-bold text-white">Emma</div>
-                                    <div class="text-xs text-slate-400">Electrical Specialist</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="status-offline w-3 h-3 rounded-full"></span>
-                                <span class="text-xs text-red-400">OFFLINE</span>
-                            </div>
-                        </div>
-                        <div class="mt-3 p-2 bg-slate-500/10 rounded-lg">
-                            <div class="text-xs text-slate-400">Queue: Deploy after Sarah fixed</div>
-                        </div>
-                    </div>
-
-                    <!-- DAVID -->
-                    <div class="agent-card glass p-5 rounded-xl cursor-pointer" onclick="showAgentDetail('david')">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-xl">
-                                    👨‍💼
-                                </div>
-                                <div>
-                                    <div class="font-bold text-white">David</div>
-                                    <div class="text-xs text-slate-400">General Contractor</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="status-offline w-3 h-3 rounded-full"></span>
-                                <span class="text-xs text-red-400">OFFLINE</span>
-                            </div>
-                        </div>
-                        <div class="mt-3 p-2 bg-slate-500/10 rounded-lg">
-                            <div class="text-xs text-slate-400">Queue: Deploy after Sarah fixed</div>
-                        </div>
+                    <div id="calls-list" class="space-y-2 max-h-80 overflow-y-auto">
+                        <div class="p-4 text-center text-slate-500 text-sm">Loading call history...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- AGENT CHAT / COORDINATION -->
-            <div class="glass p-6 rounded-2xl">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                        <span class="text-2xl">💬</span> Agent Coordination
+            <!-- RIGHT: COMMAND + HEALTH -->
+            <div class="space-y-6">
+                <!-- COMMAND CENTER -->
+                <div class="glass p-6 rounded-2xl">
+                    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="text-2xl">🎮</span> Command Center
                     </h2>
-                    <div class="flex gap-2">
-                        <span class="text-xs text-slate-400 bg-slate-700/50 px-3 py-1 rounded-full">Auto-sync: OFF</span>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs text-slate-400 mb-1 block">Select Agent</label>
+                            <select id="command-agent" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+                                <option>Loading agents...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 mb-1 block">Action</label>
+                            <select id="command-action" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+                                <option value="status">Check Status</option>
+                                <option value="test-call">Send Test Call</option>
+                                <option value="update-speed">Update Speed</option>
+                                <option value="update-prompt">Update Prompt</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 mb-1 block">Parameters</label>
+                            <input id="command-params" type="text" placeholder="Phone number, speed value, etc." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+                        </div>
+                        <button onclick="sendCommand()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm font-semibold transition">🚀 Execute</button>
+                        <div id="command-result" class="hidden p-3 rounded-lg text-xs"></div>
                     </div>
                 </div>
-                <div class="bg-slate-900/50 rounded-xl p-4 h-64 overflow-y-auto" id="agent-chat">
-                    <div class="chat-bubble received">
-                        <div class="text-xs text-purple-400 font-semibold mb-1">JARVIS System</div>
-                        <div class="text-sm text-slate-300">Agent coordination chat is ready. Once agents are deployed, they will report status here and coordinate handoffs.</div>
-                    </div>
-                    <div class="chat-bubble received">
-                        <div class="text-xs text-slate-500 font-semibold mb-1">Status</div>
-                        <div class="text-sm text-slate-400">Sarah is currently offline. All other agents are waiting for deployment.</div>
-                    </div>
-                </div>
-                <div class="mt-4 flex gap-2">
-                    <input type="text" placeholder="Send command to all agents..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition">
-                    <button class="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm font-medium transition">Send</button>
-                </div>
-            </div>
-        </div>
 
-        <!-- RIGHT: ACTIVITY LOG + TRAINING -->
-        <div class="space-y-6">
-            <!-- ACTIVITY LOG -->
-            <div class="glass p-6 rounded-2xl">
-                <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                    <span class="text-2xl">📊</span> Live Activity Log
-                </h2>
-                <div class="space-y-3 max-h-96 overflow-y-auto" id="activity-log">
-                    <div class="log-entry p-3 bg-slate-800/50 rounded-lg border-l-4 border-blue-500">
-                        <div class="flex justify-between items-start">
-                            <span class="text-blue-400 font-semibold">[07:28:22]</span>
-                            <span class="text-xs text-slate-500">System</span>
+                <!-- SYSTEM HEALTH -->
+                <div class="glass p-6 rounded-2xl">
+                    <h2 class="text-lg font-bold text-white mb-4">System Health</h2>
+                    <div id="health-bars" class="space-y-3">
+                        <div class="p-3 bg-slate-800/50 rounded-xl">
+                            <div class="flex justify-between text-sm mb-1"><span class="text-slate-400">Vapi.ai</span><span class="text-slate-500">Checking...</span></div>
+                            <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-slate-600 h-2 rounded-full" style="width:10%"></div></div>
                         </div>
-                        <div class="text-slate-300 mt-1">Migration backup created — 187MB, 25,817 files</div>
-                    </div>
-                    <div class="log-entry p-3 bg-slate-800/50 rounded-lg border-l-4 border-purple-500">
-                        <div class="flex justify-between items-start">
-                            <span class="text-purple-400 font-semibold">[07:28:45]</span>
-                            <span class="text-xs text-slate-500">Parth</span>
+                        <div class="p-3 bg-slate-800/50 rounded-xl">
+                            <div class="flex justify-between text-sm mb-1"><span class="text-slate-400">Twilio</span><span class="text-slate-500">Checking...</span></div>
+                            <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-slate-600 h-2 rounded-full" style="width:10%"></div></div>
                         </div>
-                        <div class="text-slate-300 mt-1">Performance fix initiated — STATUS_BOARD + CURRENT_TASK created</div>
-                    </div>
-                    <div class="log-entry p-3 bg-slate-800/50 rounded-lg border-l-4 border-yellow-500">
-                        <div class="flex justify-between items-start">
-                            <span class="text-yellow-400 font-semibold">[07:30:00]</span>
-                            <span class="text-xs text-slate-500">MJ</span>
+                        <div class="p-3 bg-slate-800/50 rounded-xl">
+                            <div class="flex justify-between text-sm mb-1"><span class="text-slate-400">n8n</span><span class="text-slate-500">Checking...</span></div>
+                            <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-slate-600 h-2 rounded-full" style="width:10%"></div></div>
                         </div>
-                        <div class="text-slate-300 mt-1">Requested transparency dashboard — building JARVIS Live</div>
+                        <div class="p-3 bg-slate-800/50 rounded-xl">
+                            <div class="flex justify-between text-sm mb-1"><span class="text-slate-400">OpenAI</span><span class="text-slate-500">Checking...</span></div>
+                            <div class="w-full bg-slate-700 rounded-full h-2"><div class="bg-slate-600 h-2 rounded-full" style="width:10%"></div></div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- TRAINING PANEL -->
-            <div class="glass p-6 rounded-2xl">
-                <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                    <span class="text-2xl">🎓</span> Agent Training
-                </h2>
-                <div class="space-y-4">
-                    <div class="p-4 bg-slate-800/50 rounded-xl">
-                        <div class="text-sm font-semibold text-white mb-2">Sarah — Voice Training</div>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Speed</span>
-                                <input type="range" min="0.5" max="1.5" step="0.1" value="0.9" class="w-24 accent-blue-500">
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Stability</span>
-                                <input type="range" min="0" max="1" step="0.1" value="0.65" class="w-24 accent-blue-500">
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Humanizer</span>
-                                <select class="bg-slate-700 rounded px-2 py-1 text-xs">
-                                    <option>v3 — Standard</option>
-                                    <option>v4 — Canadian</option>
-                                    <option>Custom</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button onclick="applyTraining('sarah')" class="mt-3 w-full py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium transition">
-                            Apply Changes
-                        </button>
-                    </div>
-
-                    <div class="p-4 bg-slate-800/50 rounded-xl">
-                        <div class="text-sm font-semibold text-white mb-2">Quick Prompt Editor</div>
-                        <textarea class="w-full h-24 bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-slate-300 focus:outline-none focus:border-blue-500 resize-none" placeholder="Edit agent prompt here..."></textarea>
-                        <button class="mt-2 w-full py-2 bg-purple-600 hover:bg-purple-500 rounded-lg text-sm font-medium transition">
-                            Update Prompt
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SYSTEM HEALTH -->
-            <div class="glass p-6 rounded-2xl">
-                <h2 class="text-lg font-bold text-white mb-4">System Health</h2>
-                <div class="space-y-3">
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span class="text-slate-400">n8n Cloud</span>
-                            <span class="text-emerald-400">● Online</span>
-                        </div>
-                        <div class="w-full bg-slate-700 rounded-full h-2">
-                            <div class="progress-bar h-2 rounded-full" style="width: 85%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span class="text-slate-400">Vapi.ai</span>
-                            <span class="text-emerald-400">● Online</span>
-                        </div>
-                        <div class="w-full bg-slate-700 rounded-full h-2">
-                            <div class="progress-bar h-2 rounded-full" style="width: 70%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span class="text-slate-400">Twilio</span>
-                            <span class="text-emerald-400">● Online</span>
-                        </div>
-                        <div class="w-full bg-slate-700 rounded-full h-2">
-                            <div class="progress-bar h-2 rounded-full" style="width: 90%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span class="text-slate-400">OpenAI</span>
-                            <span class="text-emerald-400">● Online</span>
-                        </div>
-                        <div class="w-full bg-slate-700 rounded-full h-2">
-                            <div class="progress-bar h-2 rounded-full" style="width: 95%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TASK QUEUE -->
-    <div class="max-w-7xl mx-auto mt-6">
-        <div class="glass p-6 rounded-2xl">
-            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <span class="text-2xl">📋</span> Task Queue
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
-                    <div class="text-emerald-400 font-bold text-sm mb-2">✅ DONE</div>
-                    <div class="text-xs text-slate-300 space-y-1">
-                        <div>• Migration backup (187MB)</div>
-                        <div>• Scripts built</div>
-                        <div>• Status board created</div>
-                        <div>• Performance fix plan</div>
-                    </div>
-                </div>
-                <div class="p-4 bg-blue-500/10 rounded-xl border border-blue-500/20">
-                    <div class="text-blue-400 font-bold text-sm mb-2">🔄 IN PROGRESS</div>
-                    <div class="text-xs text-slate-300 space-y-1">
-                        <div>• JARVIS Live dashboard</div>
-                        <div>• Transparency system</div>
-                    </div>
-                </div>
-                <div class="p-4 bg-red-500/10 rounded-xl border border-red-500/20">
-                    <div class="text-red-400 font-bold text-sm mb-2">🚫 BLOCKED</div>
-                    <div class="text-xs text-slate-300 space-y-1">
-                        <div>• Sarah voice fix (needs your call)</div>
-                        <div>• Demo page build</div>
-                        <div>• Outreach send</div>
-                    </div>
-                </div>
-                <div class="p-4 bg-purple-500/10 rounded-xl border border-purple-500/20">
-                    <div class="text-purple-400 font-bold text-sm mb-2">📅 NEXT UP</div>
-                    <div class="text-xs text-slate-300 space-y-1">
-                        <div>• Fix Sarah speed + humanizer</div>
-                        <div>• Deploy to Vapi</div>
-                        <div>• Build High Country demo</div>
-                        <div>• Send first outreach</div>
+                <!-- ACTIVITY LOG -->
+                <div class="glass p-6 rounded-2xl">
+                    <h2 class="text-lg font-bold text-white mb-4">Activity Log</h2>
+                    <div id="activity-log" class="space-y-2 max-h-64 overflow-y-auto text-sm">
+                        <div class="log-entry p-2 bg-slate-800/30 rounded text-slate-400">Dashboard initialized...</div>
                     </div>
                 </div>
             </div>
@@ -463,7 +172,13 @@
     </div>
 
     <script>
-        // Clock
+        // ─── CONFIG ───
+        const VAPI_KEY = '6c4ddf36-dac3-47d9-9165-db42e8ec4d7a';
+        const VAPI_BASE = 'https://api.vapi.ai';
+        let allAgents = [];
+        let filteredAgents = [];
+
+        // ─── CLOCK ───
         function updateClock() {
             const now = new Date();
             const mst = new Date(now.toLocaleString("en-US", {timeZone: "America/Denver"}));
@@ -472,69 +187,256 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Activity log auto-scroll
-        const logContainer = document.getElementById('activity-log');
-        logContainer.scrollTop = logContainer.scrollHeight;
-
-        // Functions
-        function refreshAgents() {
-            addLog('[System]', 'Refreshing agent status...', 'blue');
-            setTimeout(() => {
-                addLog('[System]', 'All agents checked. Sarah still offline.', 'blue');
-            }, 1000);
-        }
-
-        function trainAgent() {
-            addLog('[Parth]', 'Opening training interface for Sarah...', 'purple');
-            alert('Training panel active. Adjust sliders and click "Apply Changes" to update Sarah\'s voice settings.');
-        }
-
-        function showAgentDetail(agent) {
-            addLog('[System]', `Showing detail view for ${agent}...`, 'blue');
-        }
-
-        function applyTraining(agent) {
-            addLog('[Training]', `Applying new settings to ${agent}...`, 'yellow');
-            setTimeout(() => {
-                addLog('[Training]', `${agent} updated! Ready for test call.`, 'emerald');
-            }, 1500);
-        }
-
-        function addLog(source, message, color) {
-            const colors = {
-                blue: 'border-blue-500 text-blue-400',
-                purple: 'border-purple-500 text-purple-400',
-                yellow: 'border-yellow-500 text-yellow-400',
-                emerald: 'border-emerald-500 text-emerald-400'
-            };
-            const now = new Date();
-            const time = now.toLocaleTimeString('en-US', {hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit'});
-            
+        // ─── LOG ───
+        function addLog(source, message, type = 'info') {
+            const log = document.getElementById('activity-log');
+            const colors = { info: 'text-blue-400', success: 'text-emerald-400', error: 'text-red-400', warning: 'text-yellow-400' };
+            const time = new Date().toLocaleTimeString('en-US', {hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit'});
             const entry = document.createElement('div');
-            entry.className = `log-entry p-3 bg-slate-800/50 rounded-lg border-l-4 ${colors[color]} slide-in`;
-            entry.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <span class="font-semibold">[${time}]</span>
-                    <span class="text-xs text-slate-500">${source}</span>
-                </div>
-                <div class="text-slate-300 mt-1">${message}</div>
-            `;
-            logContainer.appendChild(entry);
-            logContainer.scrollTop = logContainer.scrollHeight;
+            entry.className = `log-entry p-2 bg-slate-800/30 rounded ${colors[type] || 'text-slate-400'}`;
+            entry.innerHTML = `<span class="opacity-50">[${time}]</span> <strong>${source}:</strong> ${message}`;
+            log.insertBefore(entry, log.firstChild);
+            if (log.children.length > 50) log.removeChild(log.lastChild);
         }
 
-        // Simulate live updates
-        setInterval(() => {
-            if (Math.random() > 0.9) {
-                const messages = [
-                    {source: '[System]', msg: 'Heartbeat check — all systems nominal', color: 'blue'},
-                    {source: '[Vapi]', msg: 'No active calls', color: 'purple'},
-                    {source: '[n8n]', msg: 'Workflows idle — awaiting trigger', color: 'blue'}
-                ];
-                const random = messages[Math.floor(Math.random() * messages.length)];
-                addLog(random.source, random.msg, random.color);
+        // ─── FETCH VAPI ───
+        async function vapiFetch(endpoint) {
+            const res = await fetch(`${VAPI_BASE}${endpoint}`, {
+                headers: { 'Authorization': `Bearer ${VAPI_KEY}`, 'Content-Type': 'application/json' }
+            });
+            if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+            return res.json();
+        }
+
+        // ─── LOAD AGENTS ───
+        async function loadAgents() {
+            try {
+                addLog('JARVIS', 'Fetching agents from Vapi.ai...', 'info');
+                const data = await vapiFetch('/assistant');
+                allAgents = Array.isArray(data) ? data : [];
+                
+                // Update metrics
+                document.getElementById('metric-agents').textContent = allAgents.length;
+                document.getElementById('metric-active').textContent = allAgents.filter(a => a.status === 'active').length;
+                document.getElementById('connection-status').innerHTML = '<span class="live-indicator text-emerald-400 font-semibold">LIVE — CONNECTED</span>';
+                
+                // Populate command dropdown
+                const select = document.getElementById('command-agent');
+                select.innerHTML = allAgents.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+                
+                addLog('Vapi', `Loaded ${allAgents.length} agents`, 'success');
+                filterAgents();
+            } catch (err) {
+                document.getElementById('connection-status').innerHTML = '<span class="text-red-400 font-semibold">● OFFLINE — ' + err.message + '</span>';
+                addLog('Vapi', `Error: ${err.message}`, 'error');
+                document.getElementById('agent-grid').innerHTML = `
+                    <div class="col-span-2 p-6 bg-red-500/10 border border-red-500/20 rounded-xl">
+                        <div class="text-red-400 font-bold mb-2">⚠️ Connection Failed</div>
+                        <div class="text-sm text-slate-300">${err.message}</div>
+                        <div class="text-xs text-slate-400 mt-2">The API key may have expired or CORS may be blocked.</div>
+                    </div>`;
             }
-        }, 30000);
+        }
+
+        // ─── RENDER AGENTS ───
+        function filterAgents() {
+            const versionFilter = document.getElementById('version-filter').value;
+            const tradeFilter = document.getElementById('trade-filter').value;
+            
+            filteredAgents = allAgents.filter(a => {
+                const name = a.name || '';
+                const version = name.includes('v4') ? 'v4' : name.includes('v3') ? 'v3' : 'other';
+                const trade = name.includes('HVAC') ? 'HVAC' : name.includes('Plumbing') ? 'Plumbing' : name.includes('Electrical') ? 'Electrical' : name.includes('General') ? 'General' : 'other';
+                
+                if (versionFilter !== 'all' && version !== versionFilter) return false;
+                if (tradeFilter !== 'all' && trade !== tradeFilter) return false;
+                return true;
+            });
+            
+            const grid = document.getElementById('agent-grid');
+            if (filteredAgents.length === 0) {
+                grid.innerHTML = '<div class="col-span-2 p-4 text-center text-slate-500">No agents match filters</div>';
+                return;
+            }
+            
+            grid.innerHTML = filteredAgents.map(agent => {
+                const name = agent.name || 'Unnamed';
+                const version = name.includes('v4') ? 'v4.0' : name.includes('v3') ? 'v3.0' : 'v1';
+                const trade = name.includes('HVAC') ? 'HVAC' : name.includes('Plumbing') ? 'Plumbing' : name.includes('Electrical') ? 'Electrical' : name.includes('General') ? 'General' : 'Other';
+                const voice = agent.voice?.voiceId || agent.voice?.provider || 'default';
+                const speed = agent.voice?.speed || 1;
+                const status = agent.status || 'active';
+                const created = new Date(agent.createdAt).toLocaleDateString();
+                const firstMsg = agent.firstMessage || '';
+                const voicemail = agent.voicemailMessage || '';
+                
+                return `
+                <div class="agent-card glass p-5 rounded-xl cursor-pointer" onclick="showAgentDetail('${agent.id}')">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-xl font-bold">
+                                ${name.charAt(0)}
+                            </div>
+                            <div>
+                                <div class="font-bold text-white">${name}</div>
+                                <div class="text-xs text-slate-400">${trade} • ${version}</div>
+                            </div>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${status === 'active' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-600/20 text-slate-400'}">${status}</span>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between"><span class="text-slate-400">Voice ID</span><span class="text-slate-300 truncate max-w-[150px]">${voice}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Speed</span><span class="text-slate-300">${speed}x</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Model</span><span class="text-slate-300">${agent.model?.model || 'unknown'}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Created</span><span class="text-slate-300">${created}</span></div>
+                    </div>
+                    ${firstMsg ? `<div class="mt-3 p-2 bg-slate-900/50 rounded-lg text-xs text-slate-400 italic">"${firstMsg.slice(0, 80)}${firstMsg.length > 80 ? '...' : ''}"</div>` : ''}
+                    ${voicemail ? `<div class="mt-2 p-2 bg-purple-900/20 rounded-lg text-xs text-purple-400">📼 Voicemail: "${voicemail.slice(0, 60)}${voicemail.length > 60 ? '...' : ''}"</div>` : ''}
+                </div>`;
+            }).join('');
+        }
+
+        // ─── LOAD CALLS ───
+        async function loadCalls() {
+            try {
+                const data = await vapiFetch('/call');
+                const calls = Array.isArray(data) ? data : [];
+                document.getElementById('metric-calls').textContent = calls.length;
+                
+                const list = document.getElementById('calls-list');
+                if (calls.length === 0) {
+                    list.innerHTML = '<div class="p-4 text-center text-slate-500 text-sm">No calls yet. Start making calls to see activity here.</div>';
+                    return;
+                }
+                
+                list.innerHTML = calls.slice(0, 20).map(call => {
+                    const status = call.status;
+                    const statusColor = status === 'ended' ? 'bg-emerald-400' : status === 'in-progress' ? 'bg-yellow-400 animate-pulse' : 'bg-slate-400';
+                    const assistant = call.assistant?.name || call.assistantId?.slice(0, 8) || 'Unknown';
+                    return `
+                    <div class="p-3 bg-slate-800/50 rounded-lg border-l-4 border-blue-500">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full ${statusColor}"></span>
+                                <span class="text-blue-400 font-mono text-sm">${call.id?.slice(0, 8) || 'N/A'}</span>
+                            </div>
+                            <span class="text-xs text-slate-500">${assistant}</span>
+                        </div>
+                        <div class="mt-2 flex justify-between text-sm">
+                            <span class="text-slate-300">${call.customer?.number || call.phoneNumber || 'No number'}</span>
+                            <span class="text-slate-400">${call.duration || 0}s · ${call.messages?.length || 0} msgs · $${(call.cost || 0).toFixed(2)}</span>
+                        </div>
+                        <div class="mt-1 text-xs text-slate-500">${call.startedAt ? new Date(call.startedAt).toLocaleString() : 'Unknown'} · ${call.direction || 'outbound'}</div>
+                    </div>`;
+                }).join('');
+                
+                addLog('Vapi', `Loaded ${calls.length} calls`, 'success');
+            } catch (err) {
+                addLog('Vapi', `Call fetch error: ${err.message}`, 'error');
+            }
+        }
+
+        // ─── SYSTEM HEALTH ───
+        async function checkHealth() {
+            const services = [
+                { name: 'Vapi.ai', key: 'vapi', check: async () => { await vapiFetch('/assistant'); return true; } },
+                { name: 'Twilio', key: 'twilio', check: async () => true }, // Would need Twilio creds
+                { name: 'n8n', key: 'n8n', check: async () => true },       // Would need n8n token
+                { name: 'OpenAI', key: 'openai', check: async () => true },  // Would need OpenAI key
+            ];
+            
+            for (const svc of services) {
+                const start = Date.now();
+                try {
+                    await svc.check();
+                    const latency = Date.now() - start;
+                    updateHealthBar(svc.name, 'online', latency);
+                } catch (err) {
+                    updateHealthBar(svc.name, 'offline', Date.now() - start, err.message);
+                }
+            }
+        }
+        
+        function updateHealthBar(name, status, latency, error = '') {
+            // Find and update the health bar for this service
+            const container = document.getElementById('health-bars');
+            const bars = container.querySelectorAll('.p-3');
+            bars.forEach(bar => {
+                const label = bar.querySelector('.text-slate-400');
+                if (label && label.textContent === name) {
+                    const statusEl = bar.querySelector('.text-slate-500, .text-emerald-400, .text-red-400');
+                    const fill = bar.querySelector('.bg-slate-600, .bg-emerald-500, .bg-red-500');
+                    
+                    if (status === 'online') {
+                        statusEl.className = 'text-xs font-semibold text-emerald-400';
+                        statusEl.textContent = `● Online (${latency}ms)`;
+                        fill.className = 'bg-emerald-500 h-2 rounded-full transition-all duration-500';
+                        fill.style.width = `${Math.min(100, Math.max(30, 100 - latency / 10))}%`;
+                    } else {
+                        statusEl.className = 'text-xs font-semibold text-red-400';
+                        statusEl.textContent = `● Offline${error ? ': ' + error.slice(0, 20) : ''}`;
+                        fill.className = 'bg-red-500 h-2 rounded-full transition-all duration-500';
+                        fill.style.width = '15%';
+                    }
+                }
+            });
+        }
+
+        // ─── AGENT DETAIL ───
+        function showAgentDetail(agentId) {
+            const agent = allAgents.find(a => a.id === agentId);
+            if (!agent) return;
+            
+            const name = agent.name || 'Unnamed';
+            const prompt = agent.model?.systemPrompt || agent.model?.messages?.[0]?.content || 'No prompt available';
+            
+            alert(`Agent: ${name}\n\nID: ${agentId}\n\nVoice: ${JSON.stringify(agent.voice, null, 2).slice(0, 500)}\n\nPrompt (first 800 chars):\n${prompt.slice(0, 800)}...\n\nUse Command Center to modify this agent.`);
+        }
+
+        // ─── SEND COMMAND ───
+        function sendCommand() {
+            const agentId = document.getElementById('command-agent').value;
+            const action = document.getElementById('command-action').value;
+            const params = document.getElementById('command-params').value;
+            const result = document.getElementById('command-result');
+            
+            const agent = allAgents.find(a => a.id === agentId);
+            const agentName = agent?.name || 'Unknown';
+            
+            result.className = 'p-3 rounded-lg text-xs bg-blue-500/10 border border-blue-500/20 text-blue-400';
+            result.textContent = `Queued: ${action} for ${agentName}${params ? ' (' + params + ')' : ''}. Note: Commands require API implementation.`;
+            result.classList.remove('hidden');
+            
+            addLog('Command', `${action} → ${agentName}`, 'info');
+        }
+
+        // ─── REFRESH ALL ───
+        async function refreshAll() {
+            addLog('JARVIS', 'Refreshing all data...', 'info');
+            await loadAgents();
+            await loadCalls();
+            await checkHealth();
+            addLog('JARVIS', 'Refresh complete', 'success');
+        }
+
+        // ─── INIT ───
+        async function init() {
+            addLog('JARVIS', 'Dashboard initializing...', 'info');
+            await loadAgents();
+            await loadCalls();
+            await checkHealth();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(async () => {
+                await loadCalls();
+                await checkHealth();
+            }, 30000);
+            
+            addLog('JARVIS', 'Dashboard live — auto-refresh active', 'success');
+        }
+
+        // Start
+        init();
     </script>
 </body>
 </html>
