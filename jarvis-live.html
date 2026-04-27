@@ -26,7 +26,7 @@
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-4xl md:text-5xl font-bold gradient-text mb-2">JARVIS</h1>
-                <p class="text-slate-400 text-lg">Live Agent Command Center — Connected to Vapi.ai</p>
+                <p class="text-slate-400 text-lg">Live Agent Command Center — REAL DATA</p>
             </div>
             <div class="flex items-center gap-4">
                 <div class="glass px-6 py-3 rounded-2xl">
@@ -42,17 +42,17 @@
             <div class="glass p-5 rounded-2xl">
                 <div class="text-slate-400 text-sm mb-1">Total Agents</div>
                 <div class="text-3xl font-bold text-blue-400" id="metric-agents">—</div>
-                <div class="text-xs text-slate-500 mt-1">Loading from Vapi...</div>
+                <div class="text-xs text-slate-500 mt-1">Live from Vapi.ai</div>
             </div>
             <div class="glass p-5 rounded-2xl">
                 <div class="text-slate-400 text-sm mb-1">Calls Today</div>
                 <div class="text-3xl font-bold text-purple-400" id="metric-calls">—</div>
-                <div class="text-xs text-slate-500 mt-1">Loading...</div>
+                <div class="text-xs text-slate-500 mt-1">Real-time</div>
             </div>
             <div class="glass p-5 rounded-2xl">
                 <div class="text-slate-400 text-sm mb-1">Active Now</div>
                 <div class="text-3xl font-bold text-pink-400" id="metric-active">—</div>
-                <div class="text-xs text-slate-500 mt-1">Real-time</div>
+                <div class="text-xs text-slate-500 mt-1">From API</div>
             </div>
             <div class="glass p-5 rounded-2xl">
                 <div class="text-slate-400 text-sm mb-1">System Status</div>
@@ -173,8 +173,8 @@
 
     <script>
         // ─── CONFIG ───
-        const VAPI_KEY = '6c4ddf36-dac3-47d9-9165-db42e8ec4d7a';
-        const VAPI_BASE = 'https://api.vapi.ai';
+        // Uses relative URLs — works through proxy server
+        const API_BASE = '';  // Empty = same origin (proxy handles it)
         let allAgents = [];
         let filteredAgents = [];
 
@@ -199,11 +199,9 @@
             if (log.children.length > 50) log.removeChild(log.lastChild);
         }
 
-        // ─── FETCH VAPI ───
-        async function vapiFetch(endpoint) {
-            const res = await fetch(`${VAPI_BASE}${endpoint}`, {
-                headers: { 'Authorization': `Bearer ${VAPI_KEY}`, 'Content-Type': 'application/json' }
-            });
+        // ─── FETCH ───
+        async function apiFetch(endpoint) {
+            const res = await fetch(`${API_BASE}${endpoint}`);
             if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
             return res.json();
         }
@@ -212,11 +210,11 @@
         async function loadAgents() {
             try {
                 addLog('JARVIS', 'Fetching agents from Vapi.ai...', 'info');
-                const data = await vapiFetch('/assistant');
-                allAgents = Array.isArray(data) ? data : [];
+                const data = await apiFetch('/api/agents');
+                allAgents = data.agents || [];
                 
                 // Update metrics
-                document.getElementById('metric-agents').textContent = allAgents.length;
+                document.getElementById('metric-agents').textContent = data.count || allAgents.length;
                 document.getElementById('metric-active').textContent = allAgents.filter(a => a.status === 'active').length;
                 document.getElementById('connection-status').innerHTML = '<span class="live-indicator text-emerald-400 font-semibold">LIVE — CONNECTED</span>';
                 
@@ -233,7 +231,7 @@
                     <div class="col-span-2 p-6 bg-red-500/10 border border-red-500/20 rounded-xl">
                         <div class="text-red-400 font-bold mb-2">⚠️ Connection Failed</div>
                         <div class="text-sm text-slate-300">${err.message}</div>
-                        <div class="text-xs text-slate-400 mt-2">The API key may have expired or CORS may be blocked.</div>
+                        <div class="text-xs text-slate-400 mt-2">Make sure you're accessing this through the proxy server.</div>
                     </div>`;
             }
         }
@@ -263,8 +261,8 @@
                 const name = agent.name || 'Unnamed';
                 const version = name.includes('v4') ? 'v4.0' : name.includes('v3') ? 'v3.0' : 'v1';
                 const trade = name.includes('HVAC') ? 'HVAC' : name.includes('Plumbing') ? 'Plumbing' : name.includes('Electrical') ? 'Electrical' : name.includes('General') ? 'General' : 'Other';
-                const voice = agent.voice?.voiceId || agent.voice?.provider || 'default';
-                const speed = agent.voice?.speed || 1;
+                const voice = agent.voice || 'default';
+                const speed = agent.voiceSpeed || 1;
                 const status = agent.status || 'active';
                 const created = new Date(agent.createdAt).toLocaleDateString();
                 const firstMsg = agent.firstMessage || '';
@@ -287,7 +285,7 @@
                     <div class="space-y-2 text-sm">
                         <div class="flex justify-between"><span class="text-slate-400">Voice ID</span><span class="text-slate-300 truncate max-w-[150px]">${voice}</span></div>
                         <div class="flex justify-between"><span class="text-slate-400">Speed</span><span class="text-slate-300">${speed}x</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Model</span><span class="text-slate-300">${agent.model?.model || 'unknown'}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Model</span><span class="text-slate-300">${agent.model || 'unknown'}</span></div>
                         <div class="flex justify-between"><span class="text-slate-400">Created</span><span class="text-slate-300">${created}</span></div>
                     </div>
                     ${firstMsg ? `<div class="mt-3 p-2 bg-slate-900/50 rounded-lg text-xs text-slate-400 italic">"${firstMsg.slice(0, 80)}${firstMsg.length > 80 ? '...' : ''}"</div>` : ''}
@@ -299,9 +297,9 @@
         // ─── LOAD CALLS ───
         async function loadCalls() {
             try {
-                const data = await vapiFetch('/call');
-                const calls = Array.isArray(data) ? data : [];
-                document.getElementById('metric-calls').textContent = calls.length;
+                const data = await apiFetch('/api/calls');
+                const calls = data.calls || [];
+                document.getElementById('metric-calls').textContent = data.count || calls.length;
                 
                 const list = document.getElementById('calls-list');
                 if (calls.length === 0) {
@@ -312,7 +310,7 @@
                 list.innerHTML = calls.slice(0, 20).map(call => {
                     const status = call.status;
                     const statusColor = status === 'ended' ? 'bg-emerald-400' : status === 'in-progress' ? 'bg-yellow-400 animate-pulse' : 'bg-slate-400';
-                    const assistant = call.assistant?.name || call.assistantId?.slice(0, 8) || 'Unknown';
+                    const assistant = call.assistant || 'Unknown';
                     return `
                     <div class="p-3 bg-slate-800/50 rounded-lg border-l-4 border-blue-500">
                         <div class="flex justify-between items-start">
@@ -323,8 +321,8 @@
                             <span class="text-xs text-slate-500">${assistant}</span>
                         </div>
                         <div class="mt-2 flex justify-between text-sm">
-                            <span class="text-slate-300">${call.customer?.number || call.phoneNumber || 'No number'}</span>
-                            <span class="text-slate-400">${call.duration || 0}s · ${call.messages?.length || 0} msgs · $${(call.cost || 0).toFixed(2)}</span>
+                            <span class="text-slate-300">${call.phone || 'No number'}</span>
+                            <span class="text-slate-400">${call.duration || 0}s · ${call.messages} msgs · $${(call.cost || 0).toFixed(2)}</span>
                         </div>
                         <div class="mt-1 text-xs text-slate-500">${call.startedAt ? new Date(call.startedAt).toLocaleString() : 'Unknown'} · ${call.direction || 'outbound'}</div>
                     </div>`;
@@ -338,48 +336,38 @@
 
         // ─── SYSTEM HEALTH ───
         async function checkHealth() {
-            const services = [
-                { name: 'Vapi.ai', key: 'vapi', check: async () => { await vapiFetch('/assistant'); return true; } },
-                { name: 'Twilio', key: 'twilio', check: async () => true }, // Would need Twilio creds
-                { name: 'n8n', key: 'n8n', check: async () => true },       // Would need n8n token
-                { name: 'OpenAI', key: 'openai', check: async () => true },  // Would need OpenAI key
-            ];
-            
-            for (const svc of services) {
-                const start = Date.now();
-                try {
-                    await svc.check();
-                    const latency = Date.now() - start;
-                    updateHealthBar(svc.name, 'online', latency);
-                } catch (err) {
-                    updateHealthBar(svc.name, 'offline', Date.now() - start, err.message);
-                }
+            try {
+                const data = await apiFetch('/api/health');
+                const container = document.getElementById('health-bars');
+                const services = [
+                    { name: 'Vapi.ai', key: 'vapi', data: data.vapi },
+                    { name: 'Twilio', key: 'twilio', data: data.twilio },
+                    { name: 'n8n', key: 'n8n', data: data.n8n },
+                    { name: 'OpenAI', key: 'openai', data: data.openai },
+                ];
+                
+                container.innerHTML = services.map(svc => {
+                    const isOnline = svc.data?.status === 'online';
+                    const latency = svc.data?.latency || 0;
+                    return `
+                    <div class="p-3 bg-slate-800/50 rounded-xl">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-slate-400">${svc.name}</span>
+                            <span class="text-xs font-semibold ${isOnline ? 'text-emerald-400' : 'text-red-400'}">${isOnline ? `● Online (${latency}ms)` : `● Offline`}</span>
+                        </div>
+                        <div class="w-full bg-slate-700 rounded-full h-2">
+                            <div class="${isOnline ? 'bg-emerald-500' : 'bg-red-500'} h-2 rounded-full transition-all duration-500" style="width: ${isOnline ? Math.min(100, Math.max(30, 100 - latency / 10)) : 15}%"></div>
+                        </div>
+                    </div>`;
+                }).join('');
+                
+                const allOnline = services.every(s => s.data?.status === 'online');
+                document.getElementById('metric-system').textContent = allOnline ? 'ONLINE' : 'ISSUES';
+                document.getElementById('metric-system').className = `text-3xl font-bold ${allOnline ? 'text-emerald-400' : 'text-yellow-400'}`;
+                
+            } catch (err) {
+                addLog('Health', `Check failed: ${err.message}`, 'error');
             }
-        }
-        
-        function updateHealthBar(name, status, latency, error = '') {
-            // Find and update the health bar for this service
-            const container = document.getElementById('health-bars');
-            const bars = container.querySelectorAll('.p-3');
-            bars.forEach(bar => {
-                const label = bar.querySelector('.text-slate-400');
-                if (label && label.textContent === name) {
-                    const statusEl = bar.querySelector('.text-slate-500, .text-emerald-400, .text-red-400');
-                    const fill = bar.querySelector('.bg-slate-600, .bg-emerald-500, .bg-red-500');
-                    
-                    if (status === 'online') {
-                        statusEl.className = 'text-xs font-semibold text-emerald-400';
-                        statusEl.textContent = `● Online (${latency}ms)`;
-                        fill.className = 'bg-emerald-500 h-2 rounded-full transition-all duration-500';
-                        fill.style.width = `${Math.min(100, Math.max(30, 100 - latency / 10))}%`;
-                    } else {
-                        statusEl.className = 'text-xs font-semibold text-red-400';
-                        statusEl.textContent = `● Offline${error ? ': ' + error.slice(0, 20) : ''}`;
-                        fill.className = 'bg-red-500 h-2 rounded-full transition-all duration-500';
-                        fill.style.width = '15%';
-                    }
-                }
-            });
         }
 
         // ─── AGENT DETAIL ───
@@ -388,13 +376,14 @@
             if (!agent) return;
             
             const name = agent.name || 'Unnamed';
-            const prompt = agent.model?.systemPrompt || agent.model?.messages?.[0]?.content || 'No prompt available';
+            const prompt = agent.modelConfig?.systemPrompt || agent.modelConfig?.messages?.[0]?.content || 'No prompt available';
+            const voiceSettings = JSON.stringify(agent.voiceSettings, null, 2);
             
-            alert(`Agent: ${name}\n\nID: ${agentId}\n\nVoice: ${JSON.stringify(agent.voice, null, 2).slice(0, 500)}\n\nPrompt (first 800 chars):\n${prompt.slice(0, 800)}...\n\nUse Command Center to modify this agent.`);
+            alert(`AGENT: ${name}\n\nID: ${agentId}\n\nVOICE SETTINGS:\n${voiceSettings.slice(0, 500)}...\n\nPROMPT (first 600 chars):\n${prompt.slice(0, 600)}...\n\nUse Command Center to modify this agent.`);
         }
 
         // ─── SEND COMMAND ───
-        function sendCommand() {
+        async function sendCommand() {
             const agentId = document.getElementById('command-agent').value;
             const action = document.getElementById('command-action').value;
             const params = document.getElementById('command-params').value;
@@ -403,11 +392,24 @@
             const agent = allAgents.find(a => a.id === agentId);
             const agentName = agent?.name || 'Unknown';
             
-            result.className = 'p-3 rounded-lg text-xs bg-blue-500/10 border border-blue-500/20 text-blue-400';
-            result.textContent = `Queued: ${action} for ${agentName}${params ? ' (' + params + ')' : ''}. Note: Commands require API implementation.`;
-            result.classList.remove('hidden');
-            
-            addLog('Command', `${action} → ${agentName}`, 'info');
+            try {
+                const res = await fetch('/api/command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ agent: agentId, action, params })
+                });
+                const data = await res.json();
+                
+                result.className = `p-3 rounded-lg text-xs ${data.success ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border border-red-500/20 text-red-400'}`;
+                result.textContent = data.message || data.error || JSON.stringify(data);
+                result.classList.remove('hidden');
+                
+                addLog('Command', `${action} → ${agentName}`, data.success ? 'success' : 'error');
+            } catch (err) {
+                result.className = 'p-3 rounded-lg text-xs bg-red-500/10 border border-red-500/20 text-red-400';
+                result.textContent = `Error: ${err.message}`;
+                result.classList.remove('hidden');
+            }
         }
 
         // ─── REFRESH ALL ───
